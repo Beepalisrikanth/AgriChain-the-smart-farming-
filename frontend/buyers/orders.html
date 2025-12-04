@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" type="image/x-icon" href="../assets/images/ac_logo.png">
+  <title>My Orders | AgriChain</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2fff2;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2d572c;
+    }
+
+    .orders-container {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .order-card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .order-card h3 {
+      margin: 0;
+      color: #333;
+    }
+
+    .order-card p {
+      margin: 5px 0;
+      color: #555;
+    }
+
+    .status {
+      font-weight: bold;
+      color: green;
+    }
+
+    .pending {
+      color: orange;
+    }
+
+    .rejected {
+      color: red;
+    }
+
+    .btn {
+      margin-top: 20px;
+      display: block;
+      text-align: center;
+      background-color: #2d572c;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      max-width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn:hover {
+      background-color: #4CAF50;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📦 My Orders</h1>
+  <div class="orders-container" id="ordersContainer"></div>
+
+  <a class="btn" href="buyers_dashboard.html">Back to Dashboard</a>
+
+  <!-- <h2>Order Placed Successfully!</h2>
+  <p>You can now download your legal crop purchase contracts.</p>
+  <button onclick="downloadContracts()" class="download-btn">
+   📄 Download Contracts
+  </button> -->
+
+  <script>
+    const token = localStorage.getItem("token");
+    const ordersContainer = document.getElementById("ordersContainer");
+
+    if (!token) {
+      window.location.href = "login.html";
+    }
+
+    fetch("http://localhost:5000/api/orders", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.length === 0) {
+        ordersContainer.innerHTML = "<p>No orders found.</p>";
+        return;
+      }
+
+      data.reverse().forEach(order => {
+        const card = document.createElement("div");
+        console.log(data)
+        card.className = "order-card";
+        card.innerHTML = `
+          <h3>${order.produce?.title || "Produce"}</h3>
+          <p>Price: ₹${order.produce?.pricePerKg ?? "?"}</p>
+          <p>Quantity: ${order.quantity}</p>
+          <p>Title: ${order.produce?.title ?? "Unknown"}</p>
+          <p>Order placed: ${order.updatedAt ?? "Unknown"}</p>
+          <p>Status: <span class="${getStatusClass(order.status)}">${order.status}</span></p>
+        `;
+        ordersContainer.appendChild(card);
+      });
+    })
+    .catch(err => {
+      console.error("Error fetching orders:", err);
+      ordersContainer.innerHTML = "<p>Something went wrong.</p>";
+    });
+
+    function getStatusClass(status) {
+      switch (status.toLowerCase()) {
+        case "pending":
+          return "pending";
+        case "rejected":
+          return "rejected";
+        case "accepted":
+          return "status";
+        default:
+          return "";
+      }
+    }
+
+  //   async function downloadContracts() {
+  //   try {
+  //     const response = await fetch("http://localhost:5000/api/contracts/generate", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json"
+  //         // Include Authorization header if needed
+  //       },
+  //       body: JSON.stringify({
+  //         orderId: "ORDER_ID_HERE",     // Replace dynamically
+  //         buyerId: "BUYER_ID_HERE",     // Replace dynamically
+  //         items: [
+  //           {
+  //             produce: "PRODUCE_ID_1",
+  //             quantity: 5
+  //           },
+  //           {
+  //             produce: "PRODUCE_ID_2",
+  //             quantity: 3
+  //           }
+  //         ]
+  //       })
+  //     });
+
+  //     const result = await response.json();
+
+  //     if (!response.ok) {
+  //       alert("Error generating contracts: " + result.message);
+  //       return;
+  //     }
+
+  //     // Loop through and trigger download
+  //     result.contracts.forEach(({ path, seller }) => {
+  //       const a = document.createElement("a");
+  //       const fileName = `Contract_${seller}.pdf`;
+  //       a.href = `http://localhost:5000/${path.replace(/\\/g, "/").replace("backend/", "")}`;
+  //       a.download = fileName;
+  //       document.body.appendChild(a);
+  //       a.click();
+  //       a.remove();
+  //     });
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("An error occurred while downloading contracts.");
+  //   }
+  // }
+
+ async function downloadContracts() {
+    // Step 1: Get buyer info (from login/localStorage)
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log(user);
+    if (!user || !user._id) {
+      alert("User not logged in!");
+      return;
+    }
+
+    const buyerId = user._id;
+
+    // Step 2: Prepare items (these should come from cart or order)
+    // const items = [
+    //   { produce: "64d73f5e5e12d9187a451e43", quantity: 5 },
+    //   { produce: "64d73e9c4e53da26b2c52ac2", quantity: 3 }
+    // ];
+
+    const response = await fetch("http://localhost:5000/api/contracts/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        produceId: user._id,    // ✅ must match above
+        quantity: user.quantity
+      })
+
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      alert("Error generating contracts: " + result.message);
+      return;
+    }
+
+    // Download each contract PDF
+    result.contracts.forEach(({ path, seller }) => {
+      const a = document.createElement("a");
+      const fileName = `Contract_${seller}.pdf`;
+      a.href = `http://localhost:5000/${path.replace(/\\/g, "/").replace("backend/", "")}`;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+  }
+
+</script>
+
+</body>
+</html>
+

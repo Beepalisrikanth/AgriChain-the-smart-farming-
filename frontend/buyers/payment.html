@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/x-icon" href="../assets/images/ac_logo.png">
+  <title>Document</title>
+</head>
+<body>
+  <header>
+    <div class="navbar">
+      <img src="../assets/images/ac_logo.png" alt="agrichian logo" class="logo">
+      <h1>Welcome, <span id="userName"></span></h1>
+      <nav>
+        <a href="view_produce.html">Marketplace</a>
+        <a href="cart.html">Cart</a>
+        <a href="orders.html">Orders</a>
+        <a href="profile.html">Profile</a>
+        <a href="#" onclick="logout()">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <section>
+    <img src="../assets/images/image.png" alt="AgriChain Logo" class="back" />
+    <div class="dashboard">
+      <div class="cart" id="cartItems">
+        <h2>Your Cart</h2>
+        <!-- Items will be injected here -->
+      </div>
+
+      <div style="padding: 20px;">
+        <p id="totalAmount"></p>
+        <p id="message"></p>
+        <button class="btn" onclick="upi()">UPI</button>
+        <button class="btn" onclick="checkout()">Card</button>
+        <button class="btn" onclick="cod()">Cash on Delivery</button>
+        <button class="btn" onclick="goHome()">Back to Home</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 AgriChain. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) window.location.href = "login.html";
+
+    const cartItemsDiv = document.getElementById("cartItems");
+    const totalAmountDiv = document.getElementById("totalAmount");
+    const message = document.getElementById("message");
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    function renderCart() {
+      cartItemsDiv.innerHTML = "<h2>Your Cart</h2>";
+      let total = 0;
+
+      if (cart.length === 0) {
+        cartItemsDiv.innerHTML += "<p>Your cart is empty.</p>";
+        totalAmountDiv.textContent = "";
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        total += item.quantity * item.pricePerKg;
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+          <h3>${item.title}</h3>
+          <p>Price per Kg: ₹${item.pricePerKg}</p>
+          <p>Quantity: ${item.quantity} Kg</p>
+          <div class="actions">
+            <span>Total: ₹${item.quantity * item.pricePerKg}</span>
+            <button class="btn" onclick="removeItem(${index})">Remove</button>
+          </div>
+        `;
+        cartItemsDiv.appendChild(div);
+      });
+
+      totalAmountDiv.textContent = `Deliver Charges: ₹30 + Handling Fee: ₹20 → Total: ₹${total + 50}`;
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+    }
+
+    function goHome() {
+      window.location.href = "buyers_dashboard.html";
+    }
+
+    function upi() {
+      alert("UPI payment coming soon!");
+    }
+
+    function cod() {
+      alert("Cash on Delivery will be implemented soon!");
+    }
+
+    async function checkout() {
+      if (cart.length === 0) {
+        message.textContent = "Cart is empty.";
+        return;
+      }
+
+      // ✅ Use only the first item for now
+        const item = cart[0];
+        const buyerId = localStorage.getItem("userId") || item.userId;
+        const produceId = item._id || item.produce || item.id;
+
+        console.log("🧾 Checkout item:", item);
+        console.log("📦 buyerId:", buyerId);
+        console.log("🌾 produceId:", produceId);
+      
+       if (!buyerId || !produceId) {
+          message.style.color = "red";
+          message.textContent = "❌ Missing buyer or produce info.";
+          return;
+        }
+ 
+
+      try {
+        const response = await fetch("http://localhost:5000/api/payment/create-checkout-session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title: item.title,
+            price: item.pricePerKg,
+            quantity: item.quantity,
+            produceId,
+            buyerId,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.url) {
+          localStorage.setItem("lastOrderId", data.orderId); // ✅ Save order ID
+          window.location.href = data.url;
+        } else {
+          message.style.color = "red";
+          message.textContent = "❌ Failed to initiate payment.";
+        }
+      } catch (error) {
+        console.error("Checkout error:", error);
+        message.style.color = "red";
+        message.textContent = "❌ Something went wrong. Try again.";
+      }
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>

@@ -1,0 +1,534 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgriChain | Home</title>
+  <link rel="shortcut icon" type="image/x-icon" href="../assets/images/ac_logo.png">
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+
+    section {
+      padding: 180px 0px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height:80vh;      
+
+      button{
+        background-color: #4CAF50;
+        color: white;
+        padding: 0px 0px;
+        border: none;
+        margin: 20px 0px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        max-width: 20vw;
+        width: 25vw
+      }
+    }
+    .lang-toggle {
+      margin-top: 10px;
+    }
+    .card {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      flex: 1;
+      min-width: 200px;
+      height:fit-content;
+      margin:5px;
+      padding:2px;
+      img{
+        width: 80%;
+      }
+    }
+    .dashboard {
+      padding: 30px 0px 0px 0px;
+      margin: 240px 0px 0px 0px;
+      background: rgba(218, 239, 214, 0.5);
+      border-radius: 8px;
+      height: 70vh;
+      width: 80%;
+      box-shadow: 0 2px 5px rgba(218, 239, 214, 0.9);
+      /* position: relative; */
+      scrollbar-width: thin;
+      overflow:scroll;
+      overflow-x: hidden;
+
+
+    }
+    nav {
+      margin:50px 0px 0px 0px;
+    }
+    section h2 {
+      font-size: 30px;
+      color: #2d572c;
+      padding: 20px;
+    }
+
+    section p {
+      font-size: 18px;
+      color: #555;
+    }
+
+    a{
+      text-decoration: none;
+      color: #2d572c;
+      border: 2px solid #2d572c;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s, color 0.3s;
+      margin: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      max-width: 15px;
+    }
+
+    section button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      margin: 50px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .back-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      margin: 20px 0px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      max-width: 30vw;
+      width: 30vw;
+    }
+
+    .back {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    #notifications {
+      /* background: #fff3cd; */
+      padding: 50px 0px 0px 0px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .buy-btn,
+    .cart-btn{
+      width: 150px;
+      margin: 10px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="navbar">
+        <img src="../assets/images/ac_logo.png" alt="agrichian logo" class="logo">
+      <h1>Welcome, <span id="userName"></span></h1>
+      <nav>
+      <a href="#" onclick="logout()">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <section>
+    <img src="../assets/images/image.png" alt="AgriChain Logo" class="back" />
+    <div class="dashboard">
+      <h2>🌾 Marketplace – Browse Produce</h2>
+      <div id="produceList" class="card-list"></div>
+      <div id="message" class="message"></div>
+    </div>
+
+  </section>
+
+  <footer>
+    <p>&copy; 2025 AgriChain. All rights reserved.</p>
+  </footer>
+
+  
+<script>
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  const produceList = document.getElementById("produceList");
+  const messageBox = document.getElementById("message");
+
+  if (!token || role !== "buyer") {
+    sessionStorage.setItem("message", "Login required to access Marketplace");
+    window.location.href = "login.html";
+  }
+
+  fetch("http://localhost:5000/api/produce", {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.length === 0) {
+        messageBox.textContent = "No produce available.";
+        return;
+      }
+
+      data.forEach(item => {
+        if (item.isApproved) {
+          const card = document.createElement("div");
+          const phone = item.postedBy?.phone?.replace(/\D/g, "");
+          card.className = "card";
+          card.innerHTML = `
+            <img src="http://localhost:5000${item.image}" alt="${item.title}" style="width: 90%; height: 150px; object-fit: cover; border-radius: 10px; margin: 10px 0px;" />
+            <h3>${item.title}</h3>
+            <p><strong>Quantity:</strong> ${item.quantity}</p>
+            <p><strong>₹/Kg:</strong> ₹${item.pricePerKg}</p>
+            <p><strong>Location:</strong> ${item.location}</p>
+            <p><strong>By:</strong> ${item.postedBy?.name || "Unknown"}</p>
+            <p><strong>Phone:</strong> ${item.postedBy?.phone || "Unknown"}</p>
+            <button class="buy-btn" onclick="chatOnWhatsApp('${item.postedBy?.name}', '${item.postedBy?.phone}', '${item.title}')">💬 Chat on WhatsApp</button>
+            <button class="buy-btn" onclick="buyNow('${item._id}', '${item.title}', ${item.pricePerKg})">Buy Now</button>
+            <button class="cart-btn" onclick="addToCart('${item._id}', '${item.title}', ${item.pricePerKg})">Add to Cart</button>
+          `;
+          produceList.appendChild(card);
+        }
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      messageBox.textContent = "Error loading produce.";
+    });
+
+  function addToCart(id, title, price, quantity) {
+    const quantity = prompt("Enter quantity (kg):");
+    if (!quantity || isNaN(quantity) || quantity <= 0) return;
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+   
+    cart.push({
+      _id: produce._id, // ✅ Make sure you store this!
+      title: produce.title,
+      price: produce.pricePerKg,
+      quantity: enteredQuantity // Or any quantity logic
+    });
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    
+    messageBox.textContent = `✅ ${title} added to cart`;
+    setTimeout(() => (messageBox.textContent = ""), 3000);
+  }
+
+  function chatOnWhatsApp(sellerName, phone, product) {
+    if (!phone || phone.length < 10) {
+      alert("Seller's phone number is unavailable or invalid.");
+      return;
+    }
+    const cleanedPhone = phone.replace(/\D/g, '');
+    const message = `Hello ${sellerName}, I'm interested in your product: ${product}. Can we discuss quality, price, and delivery? back
+    "${sellerName} గారు, మీ ఉత్పత్తి అయిన ${product}‌ గురించి నేను ఆసక్తిగా ఉన్నాను. దయచేసి నాణ్యత, ధర మరియు డెలివరీ గురించి మాట్లాడచ్చా?"`;
+    const url = `https://wa.me/91${cleanedPhone}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  }
+
+  async function buyNow(produceId, title, pricePerKg) {
+    const quantity = prompt("Enter quantity to buy:");
+    if (!quantity || isNaN(quantity)) return;
+    const totalPrice = quantity * pricePerKg;
+
+    try {
+      const response = await fetch("http://localhost:5000/api/payment/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+      body: JSON.stringify({
+        title: item.title,
+        price: item.pricePerKg,
+        quantity: item.quantity,
+        produceId,
+        buyerId,
+      }),
+
+      });
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        messageBox.style.color = "red";
+        messageBox.textContent = "Payment initiation failed.";
+      }
+    } catch (error) {
+      console.error(error);
+      messageBox.style.color = "red";
+      messageBox.textContent = "Something went wrong.";
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "../login.html";
+  }
+</script>
+
+
+
+</body>
+</html>
+ -->
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgriChain | Home</title>
+  <link rel="shortcut icon" type="image/x-icon" href="../assets/images/ac_logo.png">
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    section {
+      padding: 180px 0px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height:80vh;
+    }
+    .lang-toggle { margin-top: 10px; }
+    .card {
+      background: white;
+      padding: 2px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      flex: 1;
+      min-width: 200px;
+      margin: 5px;
+    }
+    .dashboard {
+      padding: 30px 0px 0px 0px;
+      margin: 240px 0px 0px 0px;
+      background: rgba(218, 239, 214, 0.5);
+      border-radius: 8px;
+      height: 70vh;
+      width: 80%;
+      box-shadow: 0 2px 5px rgba(218, 239, 214, 0.9);
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+    nav { margin: 50px 0px 0px 0px; }
+    section h2 { font-size: 30px; color: #2d572c; padding: 20px; }
+    section p { font-size: 18px; color: #555; }
+    a {
+      text-decoration: none;
+      color: #2d572c;
+      border: 2px solid #2d572c;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s, color 0.3s;
+      margin: 10px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    section button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      margin: 50px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .back-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      margin: 20px 0px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      max-width: 30vw;
+      width: 30vw;
+    }
+    .back {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+    #notifications { padding: 50px 0px 0px 0px; margin-top: 20px; }
+    .buy-btn, .cart-btn {
+      width: 150px;
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="navbar">
+      <img src="../assets/images/ac_logo.png" alt="agrichian logo" class="logo">
+      <h1>Welcome, <span id="userName"></span></h1>
+      <nav><a href="#" onclick="logout()">Logout</a></nav>
+    </div>
+  </header>
+
+  <section>
+    <img src="../assets/images/image.png" alt="AgriChain Logo" class="back" />
+    <div class="dashboard">
+      <h2>🌾 Marketplace – Browse Produce</h2>
+      <div id="produceList" class="card-list"></div>
+      <div id="message" class="message"></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 AgriChain. All rights reserved.</p>
+  </footer>
+
+  <!-- ✅ JS Starts -->
+  <script>
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    const userId = localStorage.getItem("userId"); // ✅ Needed for buyerId
+    const produceList = document.getElementById("produceList");
+    const messageBox = document.getElementById("message");
+
+    // if (!token || role !== "buyer") {
+    //   sessionStorage.setItem("message", "Login required to access Marketplace");
+    //   window.location.href = "login.html";
+    // }
+
+    fetch("http://localhost:5000/api/produce", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.length === 0) {
+          messageBox.textContent = "No produce available.";
+          return;
+        }
+
+        data.forEach(item => {
+          if (item.isApproved) {
+            const card = document.createElement("div");
+            const phone = item.postedBy?.phone?.replace(/\D/g, "");
+            card.className = "card";
+            card.innerHTML = `
+              <img src="http://localhost:5000${item.image}" alt="${item.title}" style="width: 90%; height: 150px; object-fit: cover; border-radius: 10px; margin: 10px 0px;" />
+              <h3>${item.title}</h3>
+              <p><strong>Quantity:</strong> ${item.quantity}</p>
+              <p><strong>₹/Kg:</strong> ₹${item.pricePerKg}</p>
+              <p><strong>Location:</strong> ${item.location}</p>
+              <p><strong>By:</strong> ${item.postedBy?.name || "Unknown"}</p>
+              <p><strong>Phone:</strong> ${item.postedBy?.phone || "Unknown"}</p>
+              <button class="buy-btn" onclick="chatOnWhatsApp('${item.postedBy?.name}', '${item.postedBy?.phone}', '${item.title}')">💬 Chat on WhatsApp</button>
+              <button class="buy-btn" onclick="buyNow('${item._id}', '${item.title}', ${item.pricePerKg})">Buy Now</button>
+              <button class="cart-btn" onclick="addToCart('${item._id}', '${item.title}', ${item.pricePerKg})">Add to Cart</button>
+            `;
+            produceList.appendChild(card);
+          }
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        messageBox.textContent = "Error loading produce.";
+      });
+
+    function addToCart(id, title, pricePerKg) {
+      const quantity = prompt("Enter quantity (kg):");
+      if (!quantity || isNaN(quantity) || quantity <= 0) return;
+
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push({
+        _id: id,               // ✅ Required for backend
+        title,
+        pricePerKg,
+        quantity
+      });
+      localStorage.setItem("cart", JSON.stringify(cart));
+      messageBox.textContent = `✅ ${title} added to cart`;
+      setTimeout(() => (messageBox.textContent = ""), 3000);
+    }
+
+    async function buyNow(produceId, title, pricePerKg) {
+      console.log("Buy Now clicked", produceId, title, pricePerKg);
+
+      const quantity = prompt("Enter quantity to buy (kg):");
+      if (!quantity || isNaN(quantity) || quantity <= 0) return;
+      console.log("userId from localStorage:", userId);
+
+      // if (!userId || !produceId) {
+      //   messageBox.textContent = "❌ Missing buyer or produce info.";
+      //   return;
+      // }
+
+      try {
+        const response = await fetch("http://localhost:5000/api/payment/create-checkout-session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            title,
+            price: pricePerKg,
+            quantity,
+            produceId,
+            buyerId: userId
+          }),
+        });
+
+        const data = await response.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          messageBox.style.color = "red";
+          messageBox.textContent = "❌ Payment initiation failed.";
+        }
+      } catch (error) {
+        console.error(error);
+        messageBox.style.color = "red";
+        messageBox.textContent = "❌ Something went wrong.";
+      }
+    }
+
+    function chatOnWhatsApp(sellerName, phone, product) {
+      if (!phone || phone.length < 10) {
+        alert("Seller's phone number is unavailable or invalid.");
+        return;
+      }
+      const cleanedPhone = phone.replace(/\D/g, '');
+      const message = `Hello ${sellerName}, I'm interested in your product: ${product}. Can we discuss quality, price, and delivery?`;
+      const url = `https://wa.me/91${cleanedPhone}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank");
+    }
+
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "../login.html";
+    }
+  </script>
+</body>
+</html>
+

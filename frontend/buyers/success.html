@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment Success | AgriChain</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e8ffe8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #2d572c;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    #invoiceButton {
+      display: none;
+      background-color: #28a745;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    #invoiceButton:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>✅ Payment Successful!</h1>
+  <p>Thank you for your purchase. Your order has been placed.</p>
+
+  <button id="invoiceButton">📄 Download Invoice</button>
+
+  <script>
+    const orderId = localStorage.getItem("latestOrderId");
+
+    if (orderId) {
+      const button = document.getElementById("invoiceButton");
+      button.style.display = "inline-block";
+      button.addEventListener("click", () => {
+        window.location.href = `http://localhost:5000/api/payment/invoice/${orderId}`;
+      });
+
+      // Optional: clear after use
+      // localStorage.removeItem("latestOrderId");
+    } else {
+      console.warn("Order ID not found in localStorage. Invoice button won't appear.");
+    }
+  </script>
+</body>
+</html>

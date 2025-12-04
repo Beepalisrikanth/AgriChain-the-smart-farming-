@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AgriChain | Home</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+
+    section {
+      padding: 180px 0px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height:70vh;
+      button{
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        margin: 50px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        max-width: 20vw;
+        width: 15vw
+      }
+    }
+    .lang-toggle {
+      margin-top: 10px;
+    }
+    .card {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      flex: 1;
+      min-width: 200px;
+      height:7vh;
+      margin:5px;
+      padding:2px;
+    }
+    .dashboard {
+      margin:320px 0px 0px 0px;
+      padding: 20px 0px 0px 0px;
+      background: rgba(218, 239, 214, 0.5);
+      border-radius: 8px;
+      height: 70vh;
+      width: 80%;
+      box-shadow: 0 2px 5px rgba(218, 239, 214, 0.9);
+      /* position: relative; */
+      scrollbar-width: thin;
+      overflow:scroll;
+
+
+    }
+    nav {
+      margin:50px 0px 0px 0px;
+    }
+    section h2 {
+      font-size: 30px;
+      color: #2d572c;
+      padding: 20px;
+    }
+
+    section p {
+      font-size: 18px;
+      color: #555;
+    }
+
+    a{
+      text-decoration: none;
+      color: #2d572c;
+      border: 2px solid #2d572c;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s, color 0.3s;
+      margin: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      max-width: 15px;
+    }
+
+    section button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      margin: 50px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .back {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    #notifications {
+      /* background: #fff3cd; */
+      padding: 50px 0px 0px 0px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="navbar">
+        <img src="../assets/images/ac_logo.png" alt="agrichian logo" class="logo">
+      <h1>Welcome, <span id="userName"></span></h1>
+      <nav>
+        <!-- <label for="language">Language:</label>
+        <select id="language" class="lang-select">
+          <option value="en">English</option>
+          <option value="hi">हिंदी</option>
+        </select> -->
+      <a href="#" onclick="logout()">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <section>
+    <img src="../assets/images/image.png" alt="AgriChain Logo" class="back" />
+    <div class="dashboard">
+        <h2>Welcome, <span id="username"></span></h2>
+
+    <div class="dashboard-box" id="dashboardStats">
+      <!-- Stats will be injected here -->
+    </div>
+    <nav>
+      <a href="view_users.html">👤 Manage Users</a>
+      <a href="view_produce.html">🌾 manage Produce</a>
+      <a href="manage_orders.html">📦 manage Orders</a>
+      <!-- admin_dashboard.html -->
+      <!-- <button onclick="location.href='manage_orders.html'" class="btn">📝 Manage Orders</button> -->
+
+    </nav>
+
+    <div id="notifications">
+      <h3>🔔 Notifications</h3>
+      <p>No new notifications.</p>
+    </div>
+    
+    </div>
+
+    <!-- <h1 data-key="welcome">Welcome, <span id="userName">Farmer</span></h1>
+    <button class="btn" data-key="postProduce">➕ Post Produce</button> -->
+
+  </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 AgriChain. All rights reserved.</p>
+  </footer>
+<script>
+    const token = localStorage.getItem("token"); // or paste it manually if needed
+    console.log(token)
+    
+
+
+
+    fetch("http://localhost:5000/api/admin/dashboard/stats", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("dashboardStats");
+      console.log(container);
+      console.log(data);
+
+      container.innerHTML = `
+        <div class="card">
+          <h3>Total Users</h3>
+          <p>${data.totalUsers}</p>
+        </div>
+        <div class="card">
+          <h3>Total Buyers</h3>
+          <p>${data.totalbuyers}</p>
+        </div>
+        <div class="card">
+          <h3>Total Admins</h3>
+          <p>${data.totaladmin}</p>
+        </div>
+        <div class="card">
+          <h3>Total Farmers</h3>
+          <p>${data.totalFarmers}</p>
+        </div>
+        <div class="card">
+          <h3>Verified Farmers</h3>
+          <p>${data.verifiedFarmers}</p>
+        </div>
+        <div class="card">
+          <h3>UnVerified Farmers</h3>
+          <p>${data.unverifiedFarmers}</p>
+        </div>
+        <div class="card">
+          <h3>Total Produce</h3>
+          <p>${data.totalProduce}</p>
+        </div>
+        <div class="card">
+          <h3>Total verified Produce</h3>
+          <p>${data.verifiedProduce}</p>
+        </div>
+        <div class="card">
+          <h3>Total UnVerified Produce</h3>
+          <p>${data.unverifiedProduce}</p>
+        </div>
+        <div class="card">
+          <h3>Total Orders</h3>
+          <p>${data.totalOrders}</p>
+        </div>
+        <div class="card">
+          <h3>acceptedOrders</h3>
+          <p>${data.acceptedOrders}</p>
+        </div>
+        <div class="card">
+          <h3>rejectedOrders</h3>
+          <p>${data.rejectedOrders}</p>
+        </div>
+        <div class="card">
+          <h3>totalOrdersInCart</h3>
+          <p>${data.totalOrdersInCart}</p>
+        </div>
+        <div class="card">
+          <h3>Total pendingOrders</h3>
+          <p>${data.pendingOrders}</p>
+        </div>
+        <div class="card">
+          <h3>totalBuyersPlacedOrders</h3>
+          <p>${data.totalBuyersPlacedOrders}</p>
+        </div>
+
+      `;
+    })
+    .catch(err => {
+      console.error("Failed to fetch dashboard stats", err);
+      document.getElementById("dashboardStats").innerHTML = "<p>Error loading data.</p>";
+    });
+
+    function logout() {
+      localStorage.clear();
+      sessionStorage.setItem("message", "You have been logged out.");
+      window.location.href = "../index.html";
+    }
+
+     // 👤 Fetch and set logged-in admin name
+  fetch("http://localhost:5000/api/user/profile", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+  .then(res => res.json())
+  .then(user => {
+    if (user && user.name) {
+      document.getElementById("userName").textContent = user.name;
+      document.getElementById("username").textContent = user.name;
+    }
+  })
+  .catch(err => {
+    console.error("Failed to load user profile", err);
+  });
+
+  function logout() {
+    localStorage.clear();
+    sessionStorage.setItem("message", "You have been logged out.");
+    window.location.href = "../index.html";
+  }
+  </script>
+
+</body>
+</html>
