@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Payment Success | AgriChain</title>
   <style>
     body {
@@ -43,6 +44,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <h1>✅ Payment Successful!</h1>
@@ -57,7 +59,7 @@
       const button = document.getElementById("invoiceButton");
       button.style.display = "inline-block";
       button.addEventListener("click", () => {
-        window.location.href = `http://localhost:5000/api/payment/invoice/${orderId}`;
+        window.location.href = `https://agrichain-the-smart-farming-k15f.onrender.com/api/payment/invoice/${orderId}`;
       });
 
       // Optional: clear after use
@@ -67,4 +69,5 @@
     }
   </script>
 </body>
+
 </html>

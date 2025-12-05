@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AgriChain | Home</title>
   <link rel="stylesheet" href="../style.css" />
   <style>
-
     section {
       background-image: url("../assets/images/image.png");
       background-size: cover;
@@ -14,13 +14,14 @@
       padding: 180px 0px;
       text-align: center;
       display: flex;
-      height:100vh;
+      height: 100vh;
       justify-content: center;
       align-items: center;
+
       /* position: fixed;
       scrollbar-width: thin;
       scroll-behavior: auto; */
-      button{
+      button {
         background-color: #4CAF50;
         color: white;
         padding: 5px 20px;
@@ -33,7 +34,10 @@
         width: 20vw
       }
     }
-        input, select, textarea {
+
+    input,
+    select,
+    textarea {
       width: 80%;
       padding: 10px;
       margin-top: 12px;
@@ -42,7 +46,7 @@
     }
 
     .dashboard {
-      margin:100px 0px 0px 0px;
+      margin: 100px 0px 0px 0px;
       padding: 20px 0px 0px 0px;
       background: rgba(218, 239, 214, 0.5);
       border-radius: 8px;
@@ -69,7 +73,7 @@
       color: #555;
     }
 
-    a{
+    a {
       text-decoration: none;
       color: #2d572c;
       border: 2px solid #2d572c;
@@ -102,18 +106,17 @@
       left: 0;
       z-index: -1;
     }
-
   </style>
-  
+
 </head>
 
 <body>
   <header>
     <div class="navbar">
-        <img src="../assets/images/ac_logo.png" alt="agrichian logo" class="logo">
+      <img src="../assets/images/ac_logo.png" alt="agrichian logo" class="logo">
       <h1>Welcome <span id="userName"></span></h1>
       <nav>
-      <a href="#" onclick="logout()">Logout</a>
+        <a href="#" onclick="logout()">Logout</a>
       </nav>
     </div>
   </header>
@@ -121,20 +124,21 @@
   <section>
     <img src="../assets/images/image.png" alt="AgriChain Logo" class="back" />
     <div class="dashboard">
-         <h2>Post Your Produce</h2>
+      <h2>Post Your Produce</h2>
 
-    <form id="produceForm" enctype="multipart/form-data">
-      <input type="text" id="title" placeholder="Produce Title" required /><br>
-      <input type="text" id="quantity" placeholder="Quantity (e.g. 100kg)" required /><br>
-      <input type="number" id="price" placeholder="Price per Kg (₹)" required /><br>
-      <input type="text" id="location" placeholder="Location" required /><br>
-      <label>Image:</label>
-      <input type="file" id="image" name="image" accept="image/*" required />
-      <button type="submit">Post Produce</button><br>
-      <button onclick="window.location.href='farmer_dashboard.html'" style="margin-top: -20px;">⬅ Back to Dashboard</button>
-       <div id="messageBox" class="message"></div>
-    </form>
-  </div>
+      <form id="produceForm" enctype="multipart/form-data">
+        <input type="text" id="title" placeholder="Produce Title" required /><br>
+        <input type="text" id="quantity" placeholder="Quantity (e.g. 100kg)" required /><br>
+        <input type="number" id="price" placeholder="Price per Kg (₹)" required /><br>
+        <input type="text" id="location" placeholder="Location" required /><br>
+        <label>Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" required />
+        <button type="submit">Post Produce</button><br>
+        <button onclick="window.location.href='farmer_dashboard.html'" style="margin-top: -20px;">⬅ Back to
+          Dashboard</button>
+        <div id="messageBox" class="message"></div>
+      </form>
+    </div>
   </section>
 
   <footer>
@@ -144,7 +148,7 @@
   <script>
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
-    console.log(token,role);
+    console.log(token, role);
 
     // ✅ Only farmers allowed
     if (!token || role !== "farmer") {
@@ -156,11 +160,11 @@
     // ✅ Decode user ID from token
     const payload = JSON.parse(atob(token.split('.')[1]));
     const userId = payload.id;
-    console.log(payload,userId);
+    console.log(payload, userId);
 
     const form = document.getElementById("produceForm");
     const messageBox = document.getElementById("messageBox");
-    console.log(form,messageBox);
+    console.log(form, messageBox);
 
 
     // form.addEventListener("submit", function (e) {
@@ -173,8 +177,8 @@
     //     postedBy: userId, // temporary: better to extract in backend
     //   };
     //   console.log(produce)
-      
-    //   fetch("http://localhost:5000/api/produce", {
+
+    //   fetch("https://agrichain-the-smart-farming-k15f.onrender.com/api/produce", {
     //     method: "POST",
     //     headers: {
     //       "Content-Type": "application/json",
@@ -201,43 +205,44 @@
     //     });
     // });
 
-       form.addEventListener("submit", function (e) {
-  e.preventDefault();
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
 
-  const formData = new FormData();
-  formData.append("title", document.getElementById("title").value);
-  formData.append("quantity", document.getElementById("quantity").value);
-  formData.append("pricePerKg", document.getElementById("price").value);
-  formData.append("location", document.getElementById("location").value);
-  formData.append("image", document.getElementById("image").files[0]);
+      const formData = new FormData();
+      formData.append("title", document.getElementById("title").value);
+      formData.append("quantity", document.getElementById("quantity").value);
+      formData.append("pricePerKg", document.getElementById("price").value);
+      formData.append("location", document.getElementById("location").value);
+      formData.append("image", document.getElementById("image").files[0]);
 
-  fetch("http://localhost:5000/api/produce", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      // ❌ Don't set Content-Type manually — let browser set it (with boundary)
-    },
-    body: formData,
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("📦 Response:", data);
-      if (data.message || data._id) {
-        messageBox.innerHTML = `✅ ${data.message || "Produce posted successfully"}`;
-        messageBox.className = "message success";
-        form.reset();
-      } else {
-        messageBox.innerHTML = `❌ ${data.error || "Something went wrong."}`;
-        messageBox.className = "message error";
-      }
-    })
-    .catch((err) => {
-      console.error("🚨 Fetch error:", err);
-      messageBox.innerHTML = "❌ Server error. Try again later.";
-      messageBox.className = "message error";
+      fetch("https://agrichain-the-smart-farming-k15f.onrender.com/api/produce", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // ❌ Don't set Content-Type manually — let browser set it (with boundary)
+        },
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("📦 Response:", data);
+          if (data.message || data._id) {
+            messageBox.innerHTML = `✅ ${data.message || "Produce posted successfully"}`;
+            messageBox.className = "message success";
+            form.reset();
+          } else {
+            messageBox.innerHTML = `❌ ${data.error || "Something went wrong."}`;
+            messageBox.className = "message error";
+          }
+        })
+        .catch((err) => {
+          console.error("🚨 Fetch error:", err);
+          messageBox.innerHTML = "❌ Server error. Try again later.";
+          messageBox.className = "message error";
+        });
     });
-});
 
   </script>
 </body>
+
 </html>

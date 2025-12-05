@@ -75,7 +75,7 @@
       window.location.href = "login.html";
     }
 
-    fetch("http://localhost:5000/api/orders/my", {
+    fetch("https://agrichain-the-smart-farming-k15f.onrender.com/api/orders/my", {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -294,7 +294,7 @@
     document.getElementById("adminName").innerText = localStorage.getItem("name") || "Admin";
 
     // Dummy fetch simulation
-    fetch("http://localhost:5000/api/admin/dashboard", {
+    fetch("https://agrichain-the-smart-farming-k15f.onrender.com/api/admin/dashboard", {
       headers: {
         Authorization: `Bearer ${token}`
       }

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="image/x-icon" href="../assets/images/ac_logo.png">
   <title>Document</title>
 </head>
+
 <body>
   <header>
     <div class="navbar">
@@ -107,23 +109,23 @@
       }
 
       // ✅ Use only the first item for now
-        const item = cart[0];
-        const buyerId = localStorage.getItem("userId") || item.userId;
-        const produceId = item._id || item.produce || item.id;
+      const item = cart[0];
+      const buyerId = localStorage.getItem("userId") || item.userId;
+      const produceId = item._id || item.produce || item.id;
 
-        console.log("🧾 Checkout item:", item);
-        console.log("📦 buyerId:", buyerId);
-        console.log("🌾 produceId:", produceId);
-      
-       if (!buyerId || !produceId) {
-          message.style.color = "red";
-          message.textContent = "❌ Missing buyer or produce info.";
-          return;
-        }
- 
+      console.log("🧾 Checkout item:", item);
+      console.log("📦 buyerId:", buyerId);
+      console.log("🌾 produceId:", produceId);
+
+      if (!buyerId || !produceId) {
+        message.style.color = "red";
+        message.textContent = "❌ Missing buyer or produce info.";
+        return;
+      }
+
 
       try {
-        const response = await fetch("http://localhost:5000/api/payment/create-checkout-session", {
+        const response = await fetch("https://agrichain-the-smart-farming-k15f.onrender.com/api/payment/create-checkout-session", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -157,4 +159,5 @@
     renderCart();
   </script>
 </body>
+
 </html>

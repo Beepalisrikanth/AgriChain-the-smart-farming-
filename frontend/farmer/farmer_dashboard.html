@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AgriChain | Home</title>
   <link rel="stylesheet" href="../style.css" />
   <style>
-
     section {
       padding: 180px 0px;
       text-align: center;
       display: flex;
-      justify-content:center;
+      justify-content: center;
       align-items: center;
       height: 100vh;
-      button{
+
+      button {
         background-color: #4CAF50;
         color: white;
         padding: 10px 20px;
@@ -29,7 +30,7 @@
     }
 
     .dashboard {
-      margin:70px 0px 0px 0px;
+      margin: 70px 0px 0px 0px;
       padding: 20px 0px 0px 0px;
       background: rgba(218, 239, 214, 0.5);
       border-radius: 8px;
@@ -52,7 +53,7 @@
       color: #555;
     }
 
-    a{
+    a {
       text-decoration: none;
       color: #2d572c;
       border: 2px solid #2d572c;
@@ -85,14 +86,13 @@
       left: 0;
       z-index: -1;
     }
-
   </style>
 </head>
 
 <body>
   <header>
     <div class="navbar">
-        <img src="../assets/images/ac_logo.png" alt="agrichian logo" class="logo">
+      <img src="../assets/images/ac_logo.png" alt="agrichian logo" class="logo">
       <h1>Welcome, <span id="userName"></span></h1>
       <nav>
         <!-- <label for="language">Language:</label>
@@ -100,7 +100,7 @@
           <option value="en">English</option>
           <option value="hi">हिंदी</option>
         </select> -->
-      <a href="#" onclick="logout()">Logout</a>
+        <a href="#" onclick="logout()">Logout</a>
       </nav>
     </div>
   </header>
@@ -108,35 +108,35 @@
   <section>
     <img src="../assets/images/image.png" alt="AgriChain Logo" class="back" />
     <div class="dashboard">
-      <h1>Welcome, <span id="username"></span></h1>  
+      <h1>Welcome, <span id="username"></span></h1>
       <div class="section-box">
         <button class="btn" onclick="location.href='post_produce.html'">➕ Post Produce</button><br>
         <button class="btn" onclick="location.href='my_produce.html'">📦 My Produce</button><br>
         <!-- <button class="btn" onclick="location.href='Orders.html'">🧾 My Orders</button> -->
         <button class="btn" onclick="location.href='profile.html'">👤 Profile</button><br>
-    
+
         <div class="section-box">
           <!-- <h2>🌟 Quick Actions</h2>
           <button class="btn" onclick="location.href='view_produce.html'">View Marketplace</button>
           <button class="btn" onclick="location.href='cart.html'">View Cart</button> -->
-    <div class="section-box">
-      <div class="weather">
-        <h3>🌐 Current Weather</h3>
-        <p id="weather">Loading...</p>
-      </div>
-      <div class="notifications">
-        <h3>🔔 Notifications</h3>
-        <ul id="notificationsList">
-          <li>No new notifications.</li>
-        </ul>
-      </div>
-    
-    </div>
+          <div class="section-box">
+            <div class="weather">
+              <h3>🌐 Current Weather</h3>
+              <p id="weather">Loading...</p>
+            </div>
+            <div class="notifications">
+              <h3>🔔 Notifications</h3>
+              <ul id="notificationsList">
+                <li>No new notifications.</li>
+              </ul>
+            </div>
 
-    <!-- <h1 data-key="welcome">Welcome, <span id="userName">Farmer</span></h1>
+          </div>
+
+          <!-- <h1 data-key="welcome">Welcome, <span id="userName">Farmer</span></h1>
     <button class="btn" data-key="postProduce">➕ Post Produce</button> -->
 
-  </div>
+        </div>
   </section>
 
   <footer>
@@ -151,26 +151,26 @@
       window.location.href = "../login.html";
     }
 
-    fetch("http://localhost:5000/api/user/profile", {
+    fetch("https://agrichain-the-smart-farming-k15f.onrender.com/api/user/profile", {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
-    .then(res => res.json())
-    .then(user => {
-      if (user && user.name) {
-        document.getElementById("userName").textContent = user.name;
-        document.getElementById("username").textContent = user.name;
-      } else {
+      .then(res => res.json())
+      .then(user => {
+        if (user && user.name) {
+          document.getElementById("userName").textContent = user.name;
+          document.getElementById("username").textContent = user.name;
+        } else {
+          document.getElementById("userName").textContent = "Farmer";
+          document.getElementById("username").textContent = "Farmer";
+
+        }
+      })
+      .catch(err => {
+        console.error("Failed to fetch user profile", err);
         document.getElementById("userName").textContent = "Farmer";
-        document.getElementById("username").textContent = "Farmer";
-        
-      }
-    })
-    .catch(err => {
-      console.error("Failed to fetch user profile", err);
-      document.getElementById("userName").textContent = "Farmer"; 
-    });
+      });
 
 
     function logout() {
@@ -182,32 +182,32 @@
 
 
     // 🌐 Weather (mock API for now)
- const weatherElement = document.getElementById("weather");
+    const weatherElement = document.getElementById("weather");
 
-  function fetchWeatherByLocation(lat, lon) {
-    fetch(`https://api.weatherapi.com/v1/current.json?key=2aded36dcdd241a8806151734252607&q=${lat},${lon}`)
-      .then(res => res.json())
-      .then(data => {
-        weatherElement.innerText = `${data.location.name}: ${data.current.temp_c}°C, ${data.current.condition.text}`;
-      })
-      .catch(err => {
-        weatherElement.innerText = "Unable to load weather.";
-      });
-  }
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        fetchWeatherByLocation(lat, lon);
-      },
-      (error) => {
-        weatherElement.innerText = "Location access denied.";
-      }
-    );
-  } else {
-    weatherElement.innerText = "Geolocation not supported.";
-  }
+    function fetchWeatherByLocation(lat, lon) {
+      fetch(`https://api.weatherapi.com/v1/current.json?key=2aded36dcdd241a8806151734252607&q=${lat},${lon}`)
+        .then(res => res.json())
+        .then(data => {
+          weatherElement.innerText = `${data.location.name}: ${data.current.temp_c}°C, ${data.current.condition.text}`;
+        })
+        .catch(err => {
+          weatherElement.innerText = "Unable to load weather.";
+        });
+    }
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          fetchWeatherByLocation(lat, lon);
+        },
+        (error) => {
+          weatherElement.innerText = "Location access denied.";
+        }
+      );
+    } else {
+      weatherElement.innerText = "Geolocation not supported.";
+    }
 
 
 
@@ -233,4 +233,5 @@
   </script>
 
 </body>
+
 </html>

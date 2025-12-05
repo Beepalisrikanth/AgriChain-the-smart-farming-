@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AgriChain | Home</title>
   <link rel="stylesheet" href="../style.css" />
   <style>
-
     section {
       background-image: url("../assets/images/image.png");
       background-size: cover;
@@ -16,10 +16,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
+
       /* position: fixed;
       scrollbar-width: thin;
       scroll-behavior: auto; */
-      button{
+      button {
         background-color: #4CAF50;
         color: white;
         padding: 10px 20px;
@@ -59,7 +60,7 @@
       color: #555;
     }
 
-    a{
+    a {
       text-decoration: none;
       color: #2d572c;
       border: 2px solid #2d572c;
@@ -92,8 +93,9 @@
       left: 0;
       z-index: -1;
     }
-    p{
-      padding:5px;
+
+    p {
+      padding: 5px;
     }
   </style>
 </head>
@@ -101,10 +103,10 @@
 <body>
   <header>
     <div class="navbar">
-        <img src="../assets/images/ac_logo.png" alt="agrichian logo" class="logo">
+      <img src="../assets/images/ac_logo.png" alt="agrichian logo" class="logo">
       <h1>Welcome, <span id="userName"></span></h1>
       <nav>
-      <a href="#" onclick="logout()">Logout</a>
+        <a href="#" onclick="logout()">Logout</a>
       </nav>
     </div>
   </header>
@@ -112,35 +114,35 @@
   <section>
     <img src="../assets/images/image.png" alt="AgriChain Logo" class="back" />
     <div class="dashboard">
-          <h2>👤 My Profile</h2>
-    <div class="info" id="profileDetails">
-      <p>Loading profile...</p>
-    </div>
-    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+      <h2>👤 My Profile</h2>
+      <div class="info" id="profileDetails">
+        <p>Loading profile...</p>
+      </div>
+      <button class="logout-btn" onclick="logout()">🚪 Logout</button>
     </div>
 
     <!-- <h1 data-key="welcome">Welcome <span id="userName">Farmer</span></h1>
     <button class="btn" data-key="postProduce">➕ Post Produce</button> -->
 
-  </div>
+    </div>
   </section>
 
   <footer>
     <p>&copy; 2025 AgriChain. All rights reserved.</p>
   </footer>
 
- <script>
+  <script>
     //User Login and Token Storage
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
-    console.log(token,role);
+    console.log(token, role);
 
     //If no token is found, the user is redirected to the login page (not authenticated)
     if (!token) {
       window.location.href = "../login.html";
     }
 
-    fetch("http://localhost:5000/api/user/profile", {
+    fetch("https://agrichain-the-smart-farming-k15f.onrender.com/api/user/profile", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -167,7 +169,7 @@
         document.getElementById("profileDetails").innerHTML = `<p>Error loading profile.</p>`;
         console.error(err);
       });
-  
+
     function logout() {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
@@ -176,10 +178,10 @@
     }
   </script>
 
-<!-- <script>
+  <!-- <script>
   const token = localStorage.getItem('token'); // ✅ Ensure this is set
 
-  fetch("http://localhost:5000/api/auth/profile", {
+  fetch("https://agrichain-the-smart-farming-k15f.onrender.com/api/auth/profile", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`
@@ -201,4 +203,5 @@
 
 
 </body>
+
 </html>

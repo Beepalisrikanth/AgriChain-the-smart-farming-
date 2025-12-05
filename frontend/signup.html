@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,8 @@
   <link rel="shortcut icon" type="image/x-icon" href="assets/images/ac_logo.png">
   <link rel="stylesheet" href="style.css">
   <style>
-
     section {
-      padding:150px 0px;
+      padding: 150px 0px;
       text-align: center;
       height: 100vh;
       width: 100vw;
@@ -17,68 +17,79 @@
       display: flex;
       justify-content: center;
       align-items: center;
+
       .logo {
-        img{
+        img {
           width: 100px;
           height: 100px;
         }
       }
+
       .signup-box {
-      background: white;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      width: 360px;
-    }
-    .signup-box h2 {
-      text-align: center;
-      color: #2d572c;
-    }
-    input, select {
-      width: 100%;
-      padding: 12px;
-      margin: 12px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #4CAF50;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #388e3c;
-    }
-    .link {
-      text-align: center;
-      margin-top: 10px;
-    }
-    .link a {
-      color: #2d572c;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    }
-.back{
-        width: 100%;
-        height: 100vh;
-        object-fit: cover;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -1;
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        width: 360px;
       }
+
+      .signup-box h2 {
+        text-align: center;
+        color: #2d572c;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 12px;
+        margin: 12px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #388e3c;
+      }
+
+      .link {
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      .link a {
+        color: #2d572c;
+        text-decoration: none;
+        font-weight: bold;
+      }
+    }
+
+    .back {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
   </style>
 </head>
+
 <body>
   <header>
     <div class="navbar">
-       <img src="assets/images/ac_logo.png" alt="agrichian logo" class="logo">
+      <img src="assets/images/ac_logo.png" alt="agrichian logo" class="logo">
       <h1>AgriChain</h1>
       <h1></h1>
     </div>
@@ -86,69 +97,69 @@
   <section>
     <img src="assets/images/image.png" alt="AgriChain Logo" class="back" />
     <div class="signup-box">
-    <h2>Create Account</h2>
-    <form id="signupForm">
-      <input type="text" id="name" placeholder="Full Name" required />
-      <input type="email" id="email" placeholder="Email Address" required />
-      <input type="text" id="phone" placeholder="Phone Number" required />
-      <input type="text" id="location" placeholder="Location" required />      
-      <input type="password" id="password" placeholder="Password" required />
-      <select id="role">
-        <option value="farmer">Farmer</option>
-        <option value="buyer">Buyer</option>
-        <!-- <option value="admin">Admin</option> -->
-      </select>
-      <button type="submit">Sign Up</button>
-      <div id="message"></div>
-    </form>
-    <div class="link">
-      Already have an account? <a href="login.html">Login</a>
+      <h2>Create Account</h2>
+      <form id="signupForm">
+        <input type="text" id="name" placeholder="Full Name" required />
+        <input type="email" id="email" placeholder="Email Address" required />
+        <input type="text" id="phone" placeholder="Phone Number" required />
+        <input type="text" id="location" placeholder="Location" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <select id="role">
+          <option value="farmer">Farmer</option>
+          <option value="buyer">Buyer</option>
+          <!-- <option value="admin">Admin</option> -->
+        </select>
+        <button type="submit">Sign Up</button>
+        <div id="message"></div>
+      </form>
+      <div class="link">
+        Already have an account? <a href="login.html">Login</a>
+      </div>
     </div>
-  </div>
   </section>
   <footer>
     <p>&copy; 2025 AgriChain. All rights reserved.</p>
   </footer>
 </body>
-  <script>
-    const form = document.getElementById('signupForm');
-    const messageDiv = document.getElementById('message');
+<script>
+  const form = document.getElementById('signupForm');
+  const messageDiv = document.getElementById('message');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-     const user = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        password: document.getElementById('password').value,
-        role: document.getElementById('role').value,
-        location: document.getElementById('location').value  // ✅ Correct usage
-      };
+    const user = {
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      password: document.getElementById('password').value,
+      role: document.getElementById('role').value,
+      location: document.getElementById('location').value  // ✅ Correct usage
+    };
 
 
-      try {
-        const response = await fetch('http://localhost:5000/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(user)
-        });
+    try {
+      const response = await fetch('https://agrichain-the-smart-farming-k15f.onrender.com/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user)
+      });
 
-        const result = await response.json();
+      const result = await response.json();
 
-        if (response.ok) {
-          messageDiv.innerHTML = `<p style="color: green;">✅ ${result.message}</p>`;
-          setTimeout(() => {
-            window.location.href = "login.html";
-          }, 1000);
-        } else {
-          messageDiv.innerHTML = `<p style="color: red;">❌ ${result.message}</p>`;
-        }
-      } catch (err) {
-        messageDiv.innerHTML = `<p style="color: red;">❌ Network Error</p>`;
-        console.error(err);
+      if (response.ok) {
+        messageDiv.innerHTML = `<p style="color: green;">✅ ${result.message}</p>`;
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 1000);
+      } else {
+        messageDiv.innerHTML = `<p style="color: red;">❌ ${result.message}</p>`;
       }
-    });
-  </script>
-</html>
+    } catch (err) {
+      messageDiv.innerHTML = `<p style="color: red;">❌ Network Error</p>`;
+      console.error(err);
+    }
+  });
+</script>
 
+</html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <link rel="shortcut icon" type="image/x-icon" href="../assets/images/ac_logo.png">
@@ -72,6 +73,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <h1>📦 My Orders</h1>
@@ -93,21 +95,21 @@
       window.location.href = "login.html";
     }
 
-    fetch("http://localhost:5000/api/orders", {
+    fetch("https://agrichain-the-smart-farming-k15f.onrender.com/api/orders", {
       headers: { Authorization: `Bearer ${token}` }
     })
-    .then(res => res.json())
-    .then(data => {
-      if (data.length === 0) {
-        ordersContainer.innerHTML = "<p>No orders found.</p>";
-        return;
-      }
+      .then(res => res.json())
+      .then(data => {
+        if (data.length === 0) {
+          ordersContainer.innerHTML = "<p>No orders found.</p>";
+          return;
+        }
 
-      data.reverse().forEach(order => {
-        const card = document.createElement("div");
-        console.log(data)
-        card.className = "order-card";
-        card.innerHTML = `
+        data.reverse().forEach(order => {
+          const card = document.createElement("div");
+          console.log(data)
+          card.className = "order-card";
+          card.innerHTML = `
           <h3>${order.produce?.title || "Produce"}</h3>
           <p>Price: ₹${order.produce?.pricePerKg ?? "?"}</p>
           <p>Quantity: ${order.quantity}</p>
@@ -115,13 +117,13 @@
           <p>Order placed: ${order.updatedAt ?? "Unknown"}</p>
           <p>Status: <span class="${getStatusClass(order.status)}">${order.status}</span></p>
         `;
-        ordersContainer.appendChild(card);
+          ordersContainer.appendChild(card);
+        });
+      })
+      .catch(err => {
+        console.error("Error fetching orders:", err);
+        ordersContainer.innerHTML = "<p>Something went wrong.</p>";
       });
-    })
-    .catch(err => {
-      console.error("Error fetching orders:", err);
-      ordersContainer.innerHTML = "<p>Something went wrong.</p>";
-    });
 
     function getStatusClass(status) {
       switch (status.toLowerCase()) {
@@ -136,103 +138,103 @@
       }
     }
 
-  //   async function downloadContracts() {
-  //   try {
-  //     const response = await fetch("http://localhost:5000/api/contracts/generate", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json"
-  //         // Include Authorization header if needed
-  //       },
-  //       body: JSON.stringify({
-  //         orderId: "ORDER_ID_HERE",     // Replace dynamically
-  //         buyerId: "BUYER_ID_HERE",     // Replace dynamically
-  //         items: [
-  //           {
-  //             produce: "PRODUCE_ID_1",
-  //             quantity: 5
-  //           },
-  //           {
-  //             produce: "PRODUCE_ID_2",
-  //             quantity: 3
-  //           }
-  //         ]
-  //       })
-  //     });
+    //   async function downloadContracts() {
+    //   try {
+    //     const response = await fetch("https://agrichain-the-smart-farming-k15f.onrender.com/api/contracts/generate", {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json"
+    //         // Include Authorization header if needed
+    //       },
+    //       body: JSON.stringify({
+    //         orderId: "ORDER_ID_HERE",     // Replace dynamically
+    //         buyerId: "BUYER_ID_HERE",     // Replace dynamically
+    //         items: [
+    //           {
+    //             produce: "PRODUCE_ID_1",
+    //             quantity: 5
+    //           },
+    //           {
+    //             produce: "PRODUCE_ID_2",
+    //             quantity: 3
+    //           }
+    //         ]
+    //       })
+    //     });
 
-  //     const result = await response.json();
+    //     const result = await response.json();
 
-  //     if (!response.ok) {
-  //       alert("Error generating contracts: " + result.message);
-  //       return;
-  //     }
+    //     if (!response.ok) {
+    //       alert("Error generating contracts: " + result.message);
+    //       return;
+    //     }
 
-  //     // Loop through and trigger download
-  //     result.contracts.forEach(({ path, seller }) => {
-  //       const a = document.createElement("a");
-  //       const fileName = `Contract_${seller}.pdf`;
-  //       a.href = `http://localhost:5000/${path.replace(/\\/g, "/").replace("backend/", "")}`;
-  //       a.download = fileName;
-  //       document.body.appendChild(a);
-  //       a.click();
-  //       a.remove();
-  //     });
-  //   } catch (err) {
-  //     console.error(err);
-  //     alert("An error occurred while downloading contracts.");
-  //   }
-  // }
+    //     // Loop through and trigger download
+    //     result.contracts.forEach(({ path, seller }) => {
+    //       const a = document.createElement("a");
+    //       const fileName = `Contract_${seller}.pdf`;
+    //       a.href = `https://agrichain-the-smart-farming-k15f.onrender.com/${path.replace(/\\/g, "/").replace("backend/", "")}`;
+    //       a.download = fileName;
+    //       document.body.appendChild(a);
+    //       a.click();
+    //       a.remove();
+    //     });
+    //   } catch (err) {
+    //     console.error(err);
+    //     alert("An error occurred while downloading contracts.");
+    //   }
+    // }
 
- async function downloadContracts() {
-    // Step 1: Get buyer info (from login/localStorage)
-    const user = JSON.parse(localStorage.getItem("user"));
-    console.log(user);
-    if (!user || !user._id) {
-      alert("User not logged in!");
-      return;
+    async function downloadContracts() {
+      // Step 1: Get buyer info (from login/localStorage)
+      const user = JSON.parse(localStorage.getItem("user"));
+      console.log(user);
+      if (!user || !user._id) {
+        alert("User not logged in!");
+        return;
+      }
+
+      const buyerId = user._id;
+
+      // Step 2: Prepare items (these should come from cart or order)
+      // const items = [
+      //   { produce: "64d73f5e5e12d9187a451e43", quantity: 5 },
+      //   { produce: "64d73e9c4e53da26b2c52ac2", quantity: 3 }
+      // ];
+
+      const response = await fetch("https://agrichain-the-smart-farming-k15f.onrender.com/api/contracts/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          produceId: user._id,    // ✅ must match above
+          quantity: user.quantity
+        })
+
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        alert("Error generating contracts: " + result.message);
+        return;
+      }
+
+      // Download each contract PDF
+      result.contracts.forEach(({ path, seller }) => {
+        const a = document.createElement("a");
+        const fileName = `Contract_${seller}.pdf`;
+        a.href = `https://agrichain-the-smart-farming-k15f.onrender.com/${path.replace(/\\/g, "/").replace("backend/", "")}`;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
     }
 
-    const buyerId = user._id;
-
-    // Step 2: Prepare items (these should come from cart or order)
-    // const items = [
-    //   { produce: "64d73f5e5e12d9187a451e43", quantity: 5 },
-    //   { produce: "64d73e9c4e53da26b2c52ac2", quantity: 3 }
-    // ];
-
-    const response = await fetch("http://localhost:5000/api/contracts/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        produceId: user._id,    // ✅ must match above
-        quantity: user.quantity
-      })
-
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      alert("Error generating contracts: " + result.message);
-      return;
-    }
-
-    // Download each contract PDF
-    result.contracts.forEach(({ path, seller }) => {
-      const a = document.createElement("a");
-      const fileName = `Contract_${seller}.pdf`;
-      a.href = `http://localhost:5000/${path.replace(/\\/g, "/").replace("backend/", "")}`;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    });
-  }
-
-</script>
+  </script>
 
 </body>
-</html>
 
+</html>
