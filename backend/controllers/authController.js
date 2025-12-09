@@ -45,7 +45,7 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: 'Invalid password' });
-    const token = jwt.sign({ id: user._id , role: user.role}, process.env.JWT_SECRET, { expiresIn: '5h' });
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '5h' });
     // const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
     //   expiresIn: '3d',
     // });
@@ -73,7 +73,7 @@ exports.forgotPassword = async (req, res) => {
     // const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
     // const resetLink = `${FRONTEND_URL}/reset_password.html?token=${resetToken}`;
 
-    const resetLink = `http://localhost:3000/reset_password.html?token=${resetToken}`;
+    const resetLink = `/reset_password.html?token=${resetToken}`;
 
     const transporter = nodemailer.createTransport({
       service: "gmail",

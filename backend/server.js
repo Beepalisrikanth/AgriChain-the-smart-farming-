@@ -70,8 +70,9 @@ const app = express();
 
 // Allowed origins
 const allowedOrigins = [
-  'http://localhost:3000', // local dev
+  // 'http://localhost:3000', // local dev
   'https://agrichain-the-smart-farming-2.onrender.com' // deployed frontend
+  // 'https://agrichain-the-smart-farming-k15f.onrender.com'
 ];
 
 app.use(cors({
@@ -95,4 +96,4 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/authRoutes'));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT,'0.0.0.0', () => console.log(`Server running on port ${PORT}`));
